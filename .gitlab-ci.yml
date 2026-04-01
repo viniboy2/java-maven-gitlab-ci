@@ -1,0 +1,38 @@
+image: maven:3.8.1-openjdk-11
+
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+
+build:
+  stage: build
+  script:
+    - mvn clean compile
+  artifacts:
+    paths:
+      - target/
+
+test:
+  stage: test
+  script:
+    - mvn test
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Executando deploy simulado na branch main..."
+  only:
+    - main
